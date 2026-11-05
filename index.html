@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attendance Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef3f8;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px #ccc;
+    }
+
+    h1 {
+      text-align: center;
+      color: #315b9b;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+    }
+
+    button {
+      padding: 10px 13px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      margin: 4px;
+    }
+
+    .add {
+      background: #315b9b;
+      width: 100%;
+      margin: 8px 0;
+    }
+
+    .present {
+      background: #219653;
+    }
+
+    .absent {
+      background: #d94343;
+    }
+
+    .delete {
+      background: #555;
+    }
+
+    .student {
+      background: #f1f5fa;
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 8px;
+    }
+
+    .summary {
+      display: flex;
+      justify-content: space-around;
+      gap: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .box {
+      background: #eaf1fa;
+      padding: 12px;
+      border-radius: 8px;
+      flex: 1;
+    }
+
+    .status {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>📋 Attendance Manager</h1>
+  <p>Manage student attendance easily!</p>
+
+  <input type="text" id="studentName"
+         placeholder="Enter student name">
+
+  <button class="add" onclick="addStudent()">
+    Add Student
+  </button>
+
+  <div class="summary">
+    <div class="box">
+      <h2 id="total">0</h2>
+      <p>Total</p>
+    </div>
+
+    <div class="box">
+      <h2 id="presentCount">0</h2>
+      <p>Present</p>
+    </div>
+
+    <div class="box">
+      <h2 id="absentCount">0</h2>
+      <p>Absent</p>
+    </div>
+  </div>
+
+  <h2>Student List</h2>
+
+  <div id="studentList"></div>
+
+</div>
+
+<script>
+
+let students = [];
+
+function addStudent() {
+  const name = document.getElementById("studentName")
+    .value.trim();
+
+  if (name === "") {
+    alert("Please enter student name!");
+    return;
+  }
+
+  students.push({
+    name: name,
+    status: "Not Marked"
+  });
+
+  document.getElementById("studentName").value = "";
+
+  displayStudents();
+}
+
+function markAttendance(index, status) {
+  students[index].status = status;
+  displayStudents();
+}
+
+function deleteStudent(index) {
+  students.splice(index, 1);
+  displayStudents();
+}
+
+function displayStudents() {
+  const list = document.getElementById("studentList");
+
+  list.innerHTML = "";
+
+  students.forEach((student, index) => {
+    const card = document.createElement("div");
+    card.className = "student";
+
+    const name = document.createElement("h3");
+    name.textContent = student.name;
+
+    const status = document.createElement("p");
+    status.className = "status";
+    status.textContent = "Status: " + student.status;
+
+    const presentBtn = document.createElement("button");
+    presentBtn.className = "present";
+    presentBtn.textContent = "Present";
+    presentBtn.onclick = () => markAttendance(index, "Present");
+
+    const absentBtn = document.createElement("button");
+    absentBtn.className = "absent";
+    absentBtn.textContent = "Absent";
+    absentBtn.onclick = () => markAttendance(index, "Absent");
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.onclick = () => deleteStudent(index);
+
+    card.append(name, status, presentBtn, absentBtn, deleteBtn);
+
+    list.appendChild(card);
+  });
+
+  document.getElementById("total").textContent = students.length;
+
+  document.getElementById("presentCount").textContent =
+    students.filter(s => s.status === "Present").length;
+
+  document.getElementById("absentCount").textContent =
+    students.filter(s => s.status === "Absent").length;
+}
+
+</script>
+
+</body>
+</html>
